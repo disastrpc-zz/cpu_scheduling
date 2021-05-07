@@ -1,14 +1,9 @@
-#ifndef DRIVER_
-#define DRIVER_
+#include "queue.h"
+#include "driver.h"
 
-typedef struct task {
-    unsigned int id;
-    unsigned int weight;
-    unsigned int burst;
-} task;
+#ifndef SCHEDULER_
+#define SCHEDULER_
 
-// Reads list of tasks from provided file
-void *gather_tasks(char *p);
-int *rand_index_list(unsigned int size);
+void schedule(node *head, int a);
 
 #endif

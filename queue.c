@@ -1,15 +1,21 @@
+/*
+These functions implement a linked list that hold the data for each processor task
+*/
+
 #include <stdio.h>
 #include <stdlib.h>
 #include "queue.h"
-#include "scheduler.h"
+#include "driver.h"
 
+// Takes pointer to head of list and walks it
 void print(node *p_head) {
 
     node *i = p_head;
 
-    printf("[*] Printing nodes...");
+    printf("[*] Printing nodes...\n");
     while(i != NULL) {
-        printf("[*] %d %d %d\n", i->data.id, i->data.weight, i->data.burst);
+        printf("[*] PID: %d WEIGHT: %d CPU BURST: %d\n", i->data.id, i->data.weight, i->data.burst);
+        i = i->n;
     }
 }
 
@@ -28,18 +34,19 @@ void push(node **p_head, task *item) {
 
     // Changes the head to the new item
     *p_head = n_item;
+
 }
 
 // Takes head pointer and pointer to already allocated 
 // task struct, which will be modified to popped values
-void pop(node **p_head, task *p_task) {
+void pop(node **p_head) {
 
     node * n_node = NULL;
 
     n_node = (*p_head)->n;
-    p_task->id = (*p_head)->data.id;
-    p_task->weight = (*p_head)->data.weight;
-    p_task->burst = (*p_head)->data.burst;
+    // p_task->id = (*p_head)->data.id;
+    // p_task->weight = (*p_head)->data.weight;
+    // p_task->burst = (*p_head)->data.burst;
 
     free(*p_head);
     *p_head = n_node;
@@ -66,15 +73,15 @@ void skip(node *p_head, task *p_task) {
 
 // Separates item from the end of queue in typical FIFO fashion
 // Takes pointer to the list head and a task struct pointer to modify
-void separate(node *p_head, task *p_task) {
+void separate(node *p_head) {
     
     // Check if list contains only one item
     if(p_head->n == NULL) {
 
         // Assign values and free current head's memory
-        p_task->id = p_head->data.id;
-        p_task->weight = p_head->data.weight;
-        p_task->burst = p_head->data.burst;
+        // p_task->id = p_head->data.id;
+        // p_task->weight = p_head->data.weight;
+        // p_task->burst = p_head->data.burst;
         free(p_head);
 
         return;
@@ -91,9 +98,9 @@ void separate(node *p_head, task *p_task) {
     // Now we can use the pointer to access the next spot 
     // on the list to assign data, free memory, and set the
     // next variable to NULL on the current node
-    p_task->id = i->n->data.id;
-    p_task->weight = i->n->data.weight;
-    p_task->burst = i->n->data.burst;
+    // p_task->id = i->n->data.id;
+    // p_task->weight = i->n->data.weight;
+    // p_task->burst = i->n->data.burst;
     free(i->n);
     i->n = NULL;
 }
@@ -105,7 +112,7 @@ void pull(node **p_head, task *p_task, unsigned int index) {
 
     // To avoid iterating over the list simply invoke pop() if index if 0
     if(index == 0) {
-        pop(p_head, p_task);
+        pop(p_head);
     }
 
     // Iterate pointer to spot before specified index 

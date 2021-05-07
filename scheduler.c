@@ -1,58 +1,42 @@
-
-#include <stdio.h>
 #include <stdlib.h>
-#include <string.h>
-#include <time.h>
 #include "queue.h"
+#include "cpu.h"
+#include "scheduler.h"
 
-// Returns void pointer to initial list of tasks
-// to be provided to the algorithms. These are read
-// from a file provided as a parameter
-void *gather_tasks(char *p) {
+/*
+1-  Input the processes along with their burst time (bt).
+2-  Find waiting time (wt) for all processes.
+3-  As first process that comes need not to wait so 
+    waiting time for process 1 will be 0 i.e. wt[0] = 0.
+4-  Find waiting time for all other processes i.e. for
+     process i -> 
+       wt[i] = bt[i-1] + wt[i-1] .
+5-  Find turnaround time = waiting_time + burst_time 
+    for all processes.
+6-  Find average waiting time = 
+                 total_waiting_time / no_of_processes.
+7-  Similarly, find average turnaround time = 
+                 total_turn_around_time / no_of_processes.
+*/
+void fcfs(node *head) {
 
-    FILE *t_file = fopen(p, "r");
-    char t_line[30][10];
-    int i = 0;
+    node *i = head;
+    int k = 1;
+    int t_count = 0;
 
-    if(t_file == NULL) {
-        perror("[-] ERROR: Unable to open file");
-        exit(-1);
+
+    while(i != NULL) {
+        process(i);
+        t_count += i->data.burst;
+        k++;
+        pop(&i);
     }
-
-    while(fgets(t_line[i], sizeof(t_line), t_file) != NULL) {
-        t_line[i][strlen(t_line[i]) - 1] = '\0';
-        i++;
-    }
-
-    for(int c = 0; c < i; c++) {
-        printf("%s\n", t_line[c]);
-    }
-
-    return NULL;
 }
 
-int *rand_index_list(unsigned int size) {
+void schedule(node *head, int a) {
 
-    int i_list[size];
-    int *p_list = i_list;
-    time_t t;
-    srand((unsigned) time(&t));
-
-    for(int i = 0; i < size; i++) {
-        i_list[i] = i;
+    switch (a) {
+    case 0:
+        fcfs(head);
     }
-
-    for(int i = 0; i < size; i++) {
-        int tmp = i_list[i];
-        int r_index = rand() % size;
-
-        i_list[i] = i_list[r_index];
-        i_list[r_index] = tmp;
-    }
-
-    for(int i = 0; i < size; i++) {
-        printf("%d\n", i_list[i]);
-    }
-
-    return NULL;
 }
