@@ -17,7 +17,7 @@ void print(node *p);
 void push(node **p_head, task *p_task);
 
 // Pops item from start of queue
-void pop(node **p_head); 
+void pop(node **p_head, task *p_task); 
 
 // Adds item to the end of queue
 void skip(node *p_head, task *p_task);
@@ -28,4 +28,5 @@ void separate(node *p_head);
 // Pulls node from list by index and stores in task stuct
 void pull(node **p_head, task *p_task, unsigned int index);
 
+void swap(node *n1, node *n2);
 #endif

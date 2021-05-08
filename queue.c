@@ -24,10 +24,18 @@ void push(node **p_head, task *item) {
     // Allocates memory for new list node
     node *n_item = (node*) malloc(sizeof(node));
 
+    if(item == NULL) {
+        perror("[-] ERROR: Item not provided");
+        exit(-1);
+    }
+
     // Assign data from task struct to node data
     n_item->data.id = item->id;
     n_item->data.weight = item->weight;
     n_item->data.burst = item->burst;
+    n_item->data.resp = item->resp;
+    n_item->data.turn = item->turn;
+    n_item->data.wait = item->wait;
 
     // Set node's next pointer to the previous head of the list
     n_item->n = *p_head;
@@ -39,14 +47,20 @@ void push(node **p_head, task *item) {
 
 // Takes head pointer and pointer to already allocated 
 // task struct, which will be modified to popped values
-void pop(node **p_head) {
+void pop(node **p_head, task *p_task) {
 
     node * n_node = NULL;
 
     n_node = (*p_head)->n;
-    // p_task->id = (*p_head)->data.id;
-    // p_task->weight = (*p_head)->data.weight;
-    // p_task->burst = (*p_head)->data.burst;
+
+    if(p_task != NULL) {
+        p_task->id = (*p_head)->data.id;
+        p_task->weight = (*p_head)->data.weight;
+        p_task->burst = (*p_head)->data.burst;
+        p_task->resp = (*p_head)->data.resp;
+        p_task->turn = (*p_head)->data.turn;
+        p_task->wait = (*p_head)->data.wait;
+    }
 
     free(*p_head);
     *p_head = n_node;
@@ -112,7 +126,7 @@ void pull(node **p_head, task *p_task, unsigned int index) {
 
     // To avoid iterating over the list simply invoke pop() if index if 0
     if(index == 0) {
-        pop(p_head);
+        pop(p_head, NULL);
     }
 
     // Iterate pointer to spot before specified index 
@@ -140,4 +154,11 @@ void pull(node **p_head, task *p_task, unsigned int index) {
     i->n = t_node->n;
 
     free(t_node);
+}
+
+void swap(node *n1, node *n2) {
+    task *tmp = &n1->data;
+    n1->data = n2->data;
+    n2->data = *tmp;
+
 }

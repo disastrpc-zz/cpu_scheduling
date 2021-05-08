@@ -104,10 +104,12 @@ int main(int argc, char *argv[]) {
         printf("Options:\n- fcfs\n- sjf\n- rr\n- ps\n- prr");
     }
 
+    stats *s = malloc(sizeof(stats));
     void *t_list = build_tlist(argv[2]);
-    if(strcmp(argv[1], "fcfs") == 0) {
-        schedule(t_list, 0);
-    } else {
-        
-    }
+    s = schedule(t_list, argv[1]);
+
+    printf("[ALGORITHM: %s]\n", argv[1]);
+    printf("[AVG WAITING: %dms]\n", s->avg_wait);
+    printf("[AVG TURNAROUND: %dms]\n", s->avg_turn);
+    printf("[AVG RESPONSE: %dms]\n", s->avg_resp);
 }
