@@ -1,4 +1,5 @@
-// Queue implements a linked list which represents the process queue. 
+/* Queue implements a linked list which represents the process queue. */
+
 #include "driver.h"
 #ifndef QUEUE_
 #define QUEUE_
@@ -19,14 +20,11 @@ void push(node **p_head, task *p_task);
 // Pops item from start of queue
 void pop(node **p_head, task *p_task); 
 
-// Adds item to the end of queue
-void skip(node *p_head, task *p_task);
+// Copy list 1 into list 2
+void *copy(node *head);
 
-// Separate item at the end of queue
-void separate(node *p_head);
-
-// Pulls node from list by index and stores in task stuct
-void pull(node **p_head, task *p_task, unsigned int index);
-
+// Swaps data from n1 and n2
 void swap(node *n1, node *n2);
+
+void del(node **head, int index);
 #endif

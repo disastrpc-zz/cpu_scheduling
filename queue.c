@@ -74,3 +74,54 @@ void swap(node *n1, node *n2) {
     n2->data = tmp.data;
 
 }
+
+void *copy(node *head) {
+
+    node *i = head;
+    node *n = malloc(sizeof(node));
+
+    // Temporary node used to point to the end of the list
+    while(i->n != NULL) {
+        push(&n, &i->data);
+        i = i->n;
+    }
+
+    return n;
+}
+
+void del(node **head, int index) {
+
+    // Check if list is empty
+    if(*head == NULL) {
+        perror("[-] ERROR: Unable to delete node");
+        exit(-1);
+    }
+
+    node *i = *head;
+
+    // Special case for removing head of list
+    if(index == 0) {
+        *head = i->n;
+        free(i);
+        return;
+    }
+
+    // Find node before the node to be deleted
+    for(int j = 0; i != NULL && j < index - 1; j++) {
+        i = i->n;
+    }
+
+    // Check if current position is valid
+    if(i == NULL || i->n == NULL) {
+        perror("[-] ERROR: Unable to delete node");
+        exit(-1);
+    }
+
+    // Store pointer after node to be deleted
+    node *n = i->n->n;
+
+    // Remove node and free memory
+    free(i->n);
+    i->n = n;
+
+}

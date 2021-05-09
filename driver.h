@@ -1,6 +1,7 @@
 #ifndef DRIVER_
 #define DRIVER_
 
+/* Defines task to be added to linked list node and its properties */
 typedef struct task {
     unsigned int id;
     unsigned int weight;
@@ -10,8 +11,5 @@ typedef struct task {
     unsigned int wait;
 } task;
 
-// Reads list of tasks from provided file
-void *build_tlist(char *p);
-int *rand_index_list(unsigned int size);
 
 #endif

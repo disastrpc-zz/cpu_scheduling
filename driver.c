@@ -6,6 +6,31 @@
 #include "queue.h"
 #include "scheduler.h"
 
+/* Generates list of random numbers of provided size in order to use as random mask when pushing
+to the queue, this is to simulate tasks arriving in different orders mainly for FCFS queues. */
+int *gen_mask(unsigned int size) {
+
+    // Initialize index list, time type and seed rand() using time()
+    static int i_list[50];
+    time_t t;
+    srand((unsigned) time(&t));
+
+    // Generate list size long
+    for(int i = 0; i < size; i++) {
+        i_list[i] = i;
+    }
+
+    // Shuffle list using mod of rand() and the max size
+    for(int i = 0; i < size; i++) {
+        int tmp = i_list[i];
+        int r_index = rand() % size;
+
+        i_list[i] = i_list[r_index];
+        i_list[r_index] = tmp;
+    }
+
+    return i_list;
+}
 
 // Returns pointer to task struct, caller is responsible for freeing allocated memory
 task *build_task(char t_str[10]) {
@@ -30,15 +55,20 @@ task *build_task(char t_str[10]) {
     return t;
 }
 
+
 /* Returns void pointer to initial list of tasks
 to be provided to the algorithms. These are read
 from a file provided as a parameter */
 void *build_tlist(char *p) {
 
+    // Task list and random lists are initially represented as 2d arrays
     char t_list[30][10];
     char r_list[30][10];
+
     int i = 0;
     FILE *t_file = fopen(p, "r");
+
+    // Create the head of the list
     node *p_head = NULL;
 
     if(t_file == NULL) {
@@ -52,7 +82,7 @@ void *build_tlist(char *p) {
     }
 
     // Generate mask of size i to access the array pseudorandomly
-    int *mask = rand_index_list(i);
+    int *mask = gen_mask(i);
 
     for(int c = 0; c < i; c++) {
 
@@ -70,31 +100,6 @@ void *build_tlist(char *p) {
     return p_head;
 }
 
-/* Generates list of random numbers of provided size in order to use as random mask when pushing
-to the queue, this is to simulate tasks arriving in different orders mainly for FCFS queues. */
-int *rand_index_list(unsigned int size) {
-
-    // Initialize index list, time type and seed rand() using time()
-    static int i_list[50];
-    time_t t;
-    srand((unsigned) time(&t));
-
-    // Generate list size long
-    for(int i = 0; i < size; i++) {
-        i_list[i] = i;
-    }
-
-    // Shuffle list using mod of rand() and the max size
-    for(int i = 0; i < size; i++) {
-        int tmp = i_list[i];
-        int r_index = rand() % size;
-
-        i_list[i] = i_list[r_index];
-        i_list[r_index] = tmp;
-    }
-
-    return i_list;
-}
 
 int main(int argc, char *argv[]) {
 
