@@ -8,9 +8,9 @@ These functions implement a linked list that hold the data for each processor ta
 #include "driver.h"
 
 // Takes pointer to head of list and walks it
-void print(node *p_head) {
+void print(node *head) {
 
-    node *i = p_head;
+    node *i = head;
 
     printf("[*] Printing nodes...\n");
     while(i != NULL) {
@@ -38,7 +38,12 @@ void push(node **p_head, task *item) {
     n_item->data.wait = item->wait;
 
     // Set node's next pointer to the previous head of the list
-    n_item->n = *p_head;
+    n_item->n = (*p_head);
+    n_item->p = NULL;
+
+    if((*p_head) != NULL) {
+        (*p_head)->p = n_item;
+    }
 
     // Changes the head to the new item
     *p_head = n_item;
@@ -75,19 +80,6 @@ void swap(node *n1, node *n2) {
 
 }
 
-void *copy(node *head) {
-
-    node *i = head;
-    node *n = malloc(sizeof(node));
-
-    // Temporary node used to point to the end of the list
-    while(i->n != NULL) {
-        push(&n, &i->data);
-        i = i->n;
-    }
-
-    return n;
-}
 
 void del(node **head, int index) {
 
