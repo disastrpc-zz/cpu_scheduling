@@ -1,7 +1,11 @@
+/* This program implements multiple CPU scheduling algorithms and calculates their waiting, response and turnaround times.
+Driver.c acts as the main file, reading a process list from a file and scrambling it. Then passing it to the algorithm specified. */
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <time.h>
+
 #include "driver.h"
 #include "queue.h"
 #include "scheduler.h"
@@ -109,7 +113,7 @@ int main(int argc, char *argv[]) {
         printf("Options:\n- fcfs\n- sjf\n- rr\n- ps\n- prr");
     }
 
-    stats *s = malloc(sizeof(stats));
+    stats *s;
     void *t_list = build_tlist(argv[2]);
     s = schedule(t_list, argv[1]);
 
@@ -117,4 +121,6 @@ int main(int argc, char *argv[]) {
     printf("[AVG WAITING: %dms]\n", s->avg_wait);
     printf("[AVG TURNAROUND: %dms]\n", s->avg_turn);
     printf("[AVG RESPONSE: %dms]\n", s->avg_resp);
+
+    free(s);
 }

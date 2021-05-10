@@ -4,6 +4,7 @@ These functions implement a linked list that hold the data for each processor ta
 
 #include <stdio.h>
 #include <stdlib.h>
+
 #include "queue.h"
 #include "driver.h"
 
@@ -39,11 +40,6 @@ void push(node **p_head, task *item) {
 
     // Set node's next pointer to the previous head of the list
     n_item->n = (*p_head);
-    n_item->p = NULL;
-
-    if((*p_head) != NULL) {
-        (*p_head)->p = n_item;
-    }
 
     // Changes the head to the new item
     *p_head = n_item;

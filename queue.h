@@ -9,7 +9,6 @@
 typedef struct node {
     task data;
     struct node *n;
-    struct node *p;
 } node;
 
 // Print items in list

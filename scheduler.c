@@ -1,3 +1,6 @@
+/* Includes all scheduling algorithms and a schedule() function which calls them 
+Results are passed to the CPU's process() function to execute them, results are displayed by driver.c 
+All functions take pointer to the head of a linked list containing the queue */
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
@@ -108,7 +111,6 @@ void *sjf(node *head) {
         w_time += i->data.wait;
         t_time += i->data.turn;
 
-        // Because all processes are assumed to arrived at 0ms responde time will equal wait time
         r_time += i->data.wait;
         
         size++;
@@ -122,7 +124,7 @@ void *sjf(node *head) {
     return s;
 }
 
-/* Very similar to sjf, instead loop sorts by weight. Returns null pointer to stats struct */
+/* Very similar to sjf, instead loop sorts by weight. Returns void pointer to stats struct */
 void *ps(node *head) {
 
     int b_time = 0; 
@@ -136,14 +138,11 @@ void *ps(node *head) {
     node *m;
     stats *s = malloc(sizeof(stats));
 
-    // Walks lists and sorts according to the process weight
     while(i->n) {
         m = i;
         j = i->n;
 
-        // Inner loop compares minimum element with element from next node
         while(j) {
-            // Sort by process weight
             if(m->data.weight > j->data.weight) {
                 m = j;
             }
@@ -174,8 +173,6 @@ void *ps(node *head) {
 
         w_time += i->data.wait;
         t_time += i->data.turn;
-
-        // Because all processes are assumed to arrived at 0ms responde time will equal wait time
         r_time += i->data.wait;
         
         size++;
@@ -211,7 +208,6 @@ void *rr(node *head) {
 
     while(i != NULL) {
         b_time[i->data.id] = i->data.burst;
-        printf("LOOP 1: %d %d\n", b_time[i->data.id], i->data.id);
         size++;
         i = i->n;
     }
@@ -226,8 +222,6 @@ void *rr(node *head) {
         c = 0;
         while(i != NULL) {
             if(b_time[i->data.id] > 0) {
-
-                printf("QTIME: %d\n", q_time);
                 
                 if(b_time[i->data.id] > TIME_QUANTUM_) {
                     d = 0;
@@ -295,32 +289,27 @@ void *rr(node *head) {
     return s;
 }
 
-void
 void *prr(node *head) {
 
-    int b_time[20];
-    int t_time = 0;
-    int w_time = 0;
-    int r_time = 0;
-    int w_queue = 0;
-    int q_time = 0;
     int c = 0;
     int size = 0;
     int c_weight = 0;
+    int b_time = 0;
+    int w_time = 0;
+    int r_time = 0;
+    int t_time = 0;
 
     node *i = head;
     node *j;
     node *m;
     stats *s = malloc(sizeof(stats));
 
-    // Walks lists and sorts according to the weight
+    // Walks lists and sorts according to the weight for further processing
     while(i != NULL) {
         m = i;
         j = i->n;
 
-        // Inner loop compares minimum element with element from next node
         while(j) {
-            // Sort by process weight
             if(m->data.weight > j->data.weight) {
                 m = j;
             }
@@ -330,17 +319,75 @@ void *prr(node *head) {
         
         swap(i, m);
         i = i->n;
+        c++;
     }
 
     i = head;
     node *tmp;
     task *t = malloc(sizeof(task));
-
+    
+    // Walks ordered list
     while(i != NULL) {
-        
+        if(i->n != NULL) {
+
+            // If next node's weight is equal to this node, start loop
+            if(i->data.weight == i->n->data.weight) {
+
+                // Copy pointer and set variable to track last used weight
+                // Loops until the weight of next node isn't equal anymore
+                node *t_ptr = i;
+                int t_weight = t_ptr->data.weight;
+                while(t_ptr->data.weight == t_weight) {
+                    t->id = t_ptr->data.id;
+                    t->weight = t_ptr->data.weight;
+                    t->burst = t_ptr->data.burst;
+                    // Add to sublist
+                    push(&tmp, t);
+                    process(tmp);
+                    t_ptr = t_ptr->n;
+                    i = t_ptr;
+                    i = i->n;
+                }
+
+                // Send sublist to RR function for processing
+                s = rr(tmp);
+                r_time = s->avg_resp;
+                t_time = s->avg_turn;
+                w_time = s->avg_wait;
+                continue;
+
+            }
+        } 
+
+
+        if(size == 0) {
+            i->data.wait = 0;
+            i->data.resp = 0;
+        } else {
+            i->data.wait = b_time;
+            i->data.resp = b_time;
+        }
+
+        b_time += i->data.burst;
+        i->data.turn = b_time;
+
+        w_time += i->data.wait;
+        t_time += i->data.turn;
+        r_time += i->data.wait;
+
+        process(i);
+        i = i->n;
+        size++;
     }
+    
+    s->avg_wait = w_time / size;
+    s->avg_turn = t_time / size;
+    s->avg_resp = r_time / size;
+
+    return s;
 }
 
+// Main function to call different algorithms
 void *schedule(node *head, char a[]) {
 
     stats *s;
