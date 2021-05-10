@@ -36,12 +36,11 @@ void *fcfs(node *head) {
             i->data.resp = b_time;
         }
 
+        // Keeps track of average burst, waiting, turnaround and response time
         b_time += i->data.burst;
         i->data.turn = b_time;
-
         w_time += i->data.wait;
         t_time += i->data.turn;
-
         // Because all processes are assumed to arrived at 0ms response time will equal wait time
         r_time += i->data.wait;
         
@@ -50,6 +49,7 @@ void *fcfs(node *head) {
         pop(&i, NULL);
     }
 
+    // Avg = time / size of list
     s->avg_wait = w_time / size;
     s->avg_turn = t_time / size;
     s->avg_resp = r_time / size;
@@ -107,12 +107,11 @@ void *sjf(node *head) {
             i->data.resp = b_time;
         }
 
+        // Keeps track of total burst, waiting, turnaround and response times for entire queue
         b_time += i->data.burst;
         i->data.turn = b_time;
-
         w_time += i->data.wait;
         t_time += i->data.turn;
-
         r_time += i->data.wait;
         
         size++;
@@ -120,6 +119,7 @@ void *sjf(node *head) {
         pop(&i, NULL);
     }
 
+    // Avg = time / size of list
     s->avg_wait = w_time / size;
     s->avg_turn = t_time / size;
     s->avg_resp = r_time / size;
@@ -173,9 +173,9 @@ void *ps(node *head) {
             i->data.resp = b_time;
         }
 
+        // Keeps track of total burst, waiting, turnaround and response times for entire queue
         b_time += i->data.burst;
         i->data.turn = b_time;
-
         w_time += i->data.wait;
         t_time += i->data.turn;
         r_time += i->data.wait;
@@ -185,6 +185,7 @@ void *ps(node *head) {
         pop(&i, NULL);
     }
 
+    // Avg = time / size of list
     s->avg_wait = w_time / size;
     s->avg_turn = t_time / size;
     s->avg_resp = r_time / size;
@@ -385,9 +386,10 @@ void *prr(node *head) {
             i->data.resp = b_time;
         }
 
+
+        // Keeps track of average times
         b_time += i->data.burst;
         i->data.turn = b_time;
-
         w_time += i->data.wait;
         t_time += i->data.turn;
         r_time += i->data.wait;
@@ -397,6 +399,7 @@ void *prr(node *head) {
         size++;
     }
     
+    // Avg = time / size of list
     s->avg_wait = w_time / size;
     s->avg_turn = t_time / size;
     s->avg_resp = r_time / size;
@@ -404,7 +407,7 @@ void *prr(node *head) {
     return s;
 }
 
-// Main function to call different algorithms
+// function to call different algorithms
 void *schedule(node *head, char a[]) {
 
     stats *s;
