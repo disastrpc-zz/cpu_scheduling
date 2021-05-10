@@ -337,7 +337,8 @@ void *prr(node *head) {
     task *t = malloc(sizeof(task));
 
     while(i != NULL) {
-
+        
+    }
 }
 
 void *schedule(node *head, char a[]) {
