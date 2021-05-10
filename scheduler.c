@@ -214,6 +214,8 @@ void *rr(node *head) {
     stats *s = malloc(sizeof(stats));
     node *i = head;
 
+
+    // Get total list size and total burst times into b_time array
     while(i != NULL) {
         b_time[i->data.id] = i->data.burst;
         size++;
@@ -221,9 +223,8 @@ void *rr(node *head) {
     }
 
     i = head;
-    // Keeps track of processes in waiting queue
+    // Keeps track of processes in waiting queue, loop executes until all processes are 0
     w_queue = size;
-
     while(1) {
 
         // Bool integer to mark when queue is done in order to break loop
@@ -278,6 +279,7 @@ void *rr(node *head) {
                 w_queue -= 1;
             }
 
+            // Reached end of innermost itteration, break and start again, otherwise keep going
             if(i->n == NULL) {
                 break;
             } else {
@@ -287,6 +289,7 @@ void *rr(node *head) {
             c++;
         }
 
+        // If outer iteration is done break otherwise start the list over
         if(d == 1) {
             break;
         } else {
@@ -294,6 +297,7 @@ void *rr(node *head) {
         }
     }
 
+    // Calculate averages into stats struct
     s->avg_wait = w_time / size;
     s->avg_turn = t_time / size;
     s->avg_resp = r_time / size;
@@ -377,7 +381,7 @@ void *prr(node *head) {
             }
         } 
 
-
+        // For first spot in list, these processes have 0 wait and response time
         if(size == 0) {
             i->data.wait = 0;
             i->data.resp = 0;
