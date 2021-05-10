@@ -111,6 +111,7 @@ int main(int argc, char *argv[]) {
         printf("[-] Not enough parameters, please provide algorithm and path to task file.\n");
         printf("Usage: %s <algorithm> <path to file>\n", argv[0]);
         printf("Options:\n- fcfs\n- sjf\n- rr\n- ps\n- prr");
+        exit(0);
     }
 
     stats *s;
