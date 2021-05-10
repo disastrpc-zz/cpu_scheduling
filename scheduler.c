@@ -57,7 +57,7 @@ void *fcfs(node *head) {
 }
 
 /* Implements shortest job first scheduling. 
-List is walked once per node, */
+List is walked once per node, inner loop is used to compare each element recursively */
 void *sjf(node *head) {
     // Values used to calculate average times
     int b_time = 0; 
@@ -128,7 +128,7 @@ void *sjf(node *head) {
 
 /* Very similar to sjf, instead loop sorts by weight. Returns void pointer to stats struct */
 void *ps(node *head) {
-    
+
     // Values used to calculate average times
     int b_time = 0; 
     int t_time = 0;
