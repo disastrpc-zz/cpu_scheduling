@@ -16,6 +16,7 @@ All functions take pointer to the head of a linked list containing the queue */
 before calling this function, in order to simulate CPU processes being pushed into the queue differently. */
 void *fcfs(node *head) {
 
+    // Values used to calculate average times
     int b_time = 0; 
     int t_time = 0;
     int w_time = 0;
@@ -41,7 +42,7 @@ void *fcfs(node *head) {
         w_time += i->data.wait;
         t_time += i->data.turn;
 
-        // Because all processes are assumed to arrived at 0ms responde time will equal wait time
+        // Because all processes are assumed to arrived at 0ms response time will equal wait time
         r_time += i->data.wait;
         
         size++;
@@ -58,7 +59,7 @@ void *fcfs(node *head) {
 /* Implements shortest job first scheduling. 
 List is walked once per node, */
 void *sjf(node *head) {
-
+    // Values used to calculate average times
     int b_time = 0; 
     int t_time = 0;
     int w_time = 0;
@@ -94,6 +95,7 @@ void *sjf(node *head) {
 
     i = head;
 
+    // Loop through list in order to generate statistics
     while(i != NULL) {
 
         // If first node on list
@@ -126,7 +128,8 @@ void *sjf(node *head) {
 
 /* Very similar to sjf, instead loop sorts by weight. Returns void pointer to stats struct */
 void *ps(node *head) {
-
+    
+    // Values used to calculate average times
     int b_time = 0; 
     int t_time = 0;
     int w_time = 0;
@@ -138,6 +141,7 @@ void *ps(node *head) {
     node *m;
     stats *s = malloc(sizeof(stats));
 
+    // List is sorted by weight
     while(i->n) {
         m = i;
         j = i->n;
@@ -157,6 +161,7 @@ void *ps(node *head) {
 
     i = head;
 
+    // Loop through list in order to generate statistics
     while(i != NULL) {
 
         // If first node on list
@@ -186,6 +191,8 @@ void *ps(node *head) {
     return s;
 }
 
+/* Round robin scheduling loops through the queue multiple times executing each process for one time quantum, in this case
+hardcoded to 10ms, until all CPU bursts are finished. This provides much greater response time but higher waiting and turnaround times. */
 void *rr(node *head) {
 
     // Array to store remaining burst time for each process
@@ -218,11 +225,13 @@ void *rr(node *head) {
 
     while(1) {
 
+        // Bool integer to mark when queue is done in order to break loop
         int d = 1;
         c = 0;
         while(i != NULL) {
             if(b_time[i->data.id] > 0) {
                 
+                // If remaining time is larger than TQ process is not done
                 if(b_time[i->data.id] > TIME_QUANTUM_) {
                     d = 0;
 
@@ -244,6 +253,8 @@ void *rr(node *head) {
                 } else {
 
                     q_time += b_time[i->data.id];
+
+                    // Only add remaining time to total waiting
                     if(w_queue > 0) {
                         i->data.wait = q_time - b_time[i->data.id];
                         w_time += i->data.wait;
@@ -289,6 +300,8 @@ void *rr(node *head) {
     return s;
 }
 
+/* Executes tasks by priority, falling back to RR if two or more share the same weight. It has a slighly larger response time by waiting
+and turnaround times are improved from regular RR */
 void *prr(node *head) {
 
     int c = 0;
@@ -306,7 +319,11 @@ void *prr(node *head) {
 
     // Walks lists and sorts according to the weight for further processing
     while(i != NULL) {
+
+        // Stores current list node
         m = i;
+
+        // Node stores next spot in list
         j = i->n;
 
         while(j) {
