@@ -110,7 +110,7 @@ int main(int argc, char *argv[]) {
     if(argc < 2) {
         printf("[-] Not enough parameters, please provide algorithm and path to task file.\n");
         printf("Usage: %s <algorithm> <path to file>\n", argv[0]);
-        printf("Options:\n- fcfs\n- sjf\n- rr\n- ps\n- prr");
+        printf("Options:\n- fcfs\n- sjf\n- rr\n- ps\n- prr\n");
         exit(0);
     }
 

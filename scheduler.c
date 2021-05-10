@@ -418,6 +418,9 @@ void *schedule(node *head, char a[]) {
         s = rr(head);
     } else if(strcmp(a, "prr") == 0) {
         s = prr(head);
+    } else {
+        printf("[-] ERROR: Invalid option %s, execute without arguments for help.\n", a);
+        exit(-1);
     }
 
     return s;
